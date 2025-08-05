@@ -1,9 +1,15 @@
-function Navbar() {
+import { Link } from "react-router-dom";
+
+const Navbar = () => {
   return (
-    <nav>
-      <h1>Pizzería Mamma Mía</h1>
-      <button>🛒</button>
+    <nav style={{ padding: "1rem", background: "#f2f2f2" }}>
+      <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
+      <Link to="/register" style={{ marginRight: "1rem" }}>Register</Link>
+      <Link to="/login" style={{ marginRight: "1rem" }}>Login</Link>
+      <Link to="/profile" style={{ marginRight: "1rem" }}>Profile</Link>
+      <Link to="/cart" style={{ marginRight: "1rem" }}>🛒 Total: $xxx</Link>
     </nav>
   );
-}
+};
+
 export default Navbar;
