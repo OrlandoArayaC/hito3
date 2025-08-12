@@ -1,38 +1,21 @@
-import { useState } from "react";
-import { pizzaCart } from "./pizzas";
+import { useCart } from "./CartContext";
 
-function Cart() {
-  const [cart, setCart] = useState(pizzaCart);
-
-  const increase = (id) => {
-    setCart(cart.map(p => p.id === id ? { ...p, quantity: p.quantity + 1 } : p));
-  };
-
-  const decrease = (id) => {
-    setCart(cart.filter(p => !(p.id === id && p.quantity === 1)).map(p => (
-      p.id === id ? { ...p, quantity: p.quantity - 1 } : p
-    )));
-  };
-
-  const total = cart.reduce((acc, p) => acc + p.price * p.quantity, 0);
+const Cart = () => {
+  const { cart, removeFromCart, total } = useCart();
 
   return (
     <div>
-      <h2>Carrito de Compras</h2>
-      {cart.map(p => (
-        <div key={p.id}>
-          <img src={p.img} alt={p.name} width="100" />
-          <h3>{p.name}</h3>
-          <p>Precio: ${p.price}</p>
-          <p>Cantidad: {p.quantity}</p>
-          <button onClick={() => decrease(p.id)}>-</button>
-          <button onClick={() => increase(p.id)}>+</button>
+      <h2>Carrito</h2>
+      {cart.length === 0 && <p>Carrito vacío</p>}
+      {cart.map((item, index) => (
+        <div key={index}>
+          <p>{item.name} - ${item.price}</p>
+          <button onClick={() => removeFromCart(item.id)}>Eliminar</button>
         </div>
       ))}
       <h3>Total: ${total}</h3>
-      <button>Pagar</button>
     </div>
   );
-}
+};
 
 export default Cart;
