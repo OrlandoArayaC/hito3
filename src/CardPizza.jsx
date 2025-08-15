@@ -1,15 +1,16 @@
-function CardPizza({ pizza }) {
+import React from "react";
+import { Link } from "react-router-dom";
+
+const CardPizza = ({ pizza }) => {
   return (
-    <div className="card">
-      <h3>{pizza.name}</h3>
-      <img src={pizza.img} alt={pizza.name} width="200" />
-      <ul>
-        {pizza.ingredients.map((ing, index) => (
-          <li key={index}>{ing}</li>
-        ))}
-      </ul>
+    <div>
+      <h2>{pizza.name}</h2>
+      <img src={pizza.img} alt={pizza.name} style={{ maxWidth: "200px" }} />
       <p>Precio: ${pizza.price}</p>
+      <Link to={`/pizza/${pizza.id}`}>Ver más</Link>
     </div>
   );
-}
+};
+
 export default CardPizza;
+

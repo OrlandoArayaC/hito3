@@ -1,19 +1,29 @@
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "./CartContext";
+import { UserContext } from "./UserContext";
 
 const Navbar = () => {
-  const { total } = useCart();
+  const { token, logout } = useContext(UserContext);
 
   return (
-    <nav style={{ padding: "1rem", background: "#f2f2f2" }}>
-      <Link to="/" style={{ marginRight: "1rem" }}>Home</Link>
-      <Link to="/register" style={{ marginRight: "1rem" }}>Register</Link>
-      <Link to="/login" style={{ marginRight: "1rem" }}>Login</Link>
-      <Link to="/profile" style={{ marginRight: "1rem" }}>Profile</Link>
-      <Link to="/cart">🛒 Total: ${total}</Link>
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/total">Total</Link>
+      {token ? (
+        <>
+          <Link to="/profile">Profile</Link>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
+        </>
+      )}
     </nav>
   );
 };
 
 export default Navbar;
+
 

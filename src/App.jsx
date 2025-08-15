@@ -1,27 +1,40 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useContext } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./Navbar";
-import Home from "./pages/Home";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Cart from "./pages/Cart";
 import Pizza from "./pages/Pizza";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
+import Cart from "./Cart";
+import { UserProvider, UserContext } from "./UserContext";
+
+const Profile = () => <h1>Perfil de usuario</h1>;
+const Login = () => <h1>Login</h1>;
+const Register = () => <h1>Register</h1>;
+const Home = () => <h1>Home</h1>;
+
+const ProtectedRoute = ({ children }) => {
+  const { token } = useContext(UserContext);
+  return token ? children : <Navigate to="/login" />;
+};
+
+const AuthRoute = ({ children }) => {
+  const { token } = useContext(UserContext);
+  return token ? <Navigate to="/" /> : children;
+};
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/pizza/p001" element={<Pizza />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+    <UserProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/pizza/:id" element={<Pizza />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
+          <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }
 
