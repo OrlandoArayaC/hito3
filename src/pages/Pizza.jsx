@@ -1,35 +1,19 @@
-import React, { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
+import { pizzas } from "../pizzas";
+import { useCart } from "../contexts/CartContext";
 
-const Pizza = () => {
+export default function Pizza() {
   const { id } = useParams();
-  const [pizza, setPizza] = useState(null);
-
-  useEffect(() => {
-    const fetchPizza = async () => {
-      try {
-        const res = await fetch(`/api/pizzas/${id}`);
-        const data = await res.json();
-        setPizza(data);
-      } catch (error) {
-        console.error("Error fetching pizza:", error);
-      }
-    };
-    fetchPizza();
-  }, [id]);
-
-  if (!pizza) return <p>Cargando...</p>;
-
+  const pizza = pizzas.find(p => p.id === id);
+  const { addToCart } = useCart();
+  if (!pizza) return <p>Pizza no encontrada</p>;
   return (
-    <div>
-      <h1>{pizza.name}</h1>
-      <img src={pizza.img} alt={pizza.name} style={{ maxWidth: "300px" }} />
-      <p>{pizza.desc}</p>
-      <p>Precio: ${pizza.price}</p>
+    <div style={{padding:16}}>
+      <h2>{pizza.name}</h2>
+      <img src={pizza.img} alt={pizza.name} style={{width:360, maxWidth:"100%", borderRadius:8}} />
+      <ul>{pizza.ingredients.map((ing,i)=><li key={i}>{ing}</li>)}</ul>
+      <button onClick={()=>addToCart(pizza)}>Añadir al carrito</button>
     </div>
   );
-};
-
-export default Pizza;
-
-  
+}

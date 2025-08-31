@@ -1,41 +1,38 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Navbar from "./Navbar";
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 import Pizza from "./pages/Pizza";
-import Cart from "./Cart";
-import { UserProvider, UserContext } from "./UserContext";
+import Cart from "./pages/Cart";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
+import { UserProvider, useUser } from "./contexts/UserContext";
+import { CartProvider } from "./contexts/CartContext";
 
-const Profile = () => <h1>Perfil de usuario</h1>;
-const Login = () => <h1>Login</h1>;
-const Register = () => <h1>Register</h1>;
-const Home = () => <h1>Home</h1>;
+function Protected({ children }){
+  const { isAuth } = useUser();
+  return isAuth ? children : <Navigate to="/login" replace />;
+}
 
-const ProtectedRoute = ({ children }) => {
-  const { token } = useContext(UserContext);
-  return token ? children : <Navigate to="/login" />;
-};
-
-const AuthRoute = ({ children }) => {
-  const { token } = useContext(UserContext);
-  return token ? <Navigate to="/" /> : children;
-};
-
-function App() {
+export default function App(){
   return (
     <UserProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/pizza/:id" element={<Pizza />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
-          <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
-        </Routes>
-      </Router>
+      <CartProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/pizza/:id" element={<Pizza />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/profile" element={<Protected><Profile /></Protected>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
     </UserProvider>
   );
 }
-
-export default App;
